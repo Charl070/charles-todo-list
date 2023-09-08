@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../helpers/axiosInstance";
 
 // TodoContext
 const TodoContext = createContext<AppContextType>({
@@ -15,39 +15,25 @@ export const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   const [todos, setTodos] = useState<Todo[]>([]);
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get(`https://todos.appsquare.io/todos`, {
-        headers: {
-          Authorization: "Bearer charles-token",
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json-patch+json",
-          withCredentials: true,
-        },
+    axiosInstance
+      .get("/todos")
+      .then((response) => {
+        setTodos(response?.data.todos);
+      })
+      .catch((error) => {
+        console.error("GET request error:", error);
       });
-      setTodos(response.data.todos);
-    }
-    fetchData();
   }, []);
 
   const addTodo = async (newTodo: InsertTodo) => {
-    const response = await axios.post(
-      `https://todos.appsquare.io/todos`,
-      newTodo,
-      {
-        headers: {
-          Authorization: "Bearer charles-token",
-          accept: "text/plain",
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json-patch+json",
-          withCredentials: true,
-        },
-      },
-    );
-    if (response) {
-      setTodos((prevTodos) => [...prevTodos, response.data.todo[0]]);
-    } else {
-      console.error("Failed to add todo");
-    }
+    axiosInstance
+      .post("/todos", newTodo)
+      .then((response) => {
+        setTodos((prevTodos) => [...prevTodos, response.data.todo[0]]);
+      })
+      .catch((error) => {
+        console.error("PUT request error:", error);
+      });
   };
 
   const updateTodo = async (updatedTodo: Todo) => {
@@ -56,52 +42,33 @@ export const TodoProvider = ({ children }: { children: React.ReactNode }) => {
       title: updatedTodo.title,
     };
 
-    const response = await axios.patch(
-      `https://todos.appsquare.io/todos/${updatedTodo.id}`,
-      payload,
-      {
-        headers: {
-          Authorization: "Bearer charles-token",
-          accept: "text/plain",
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json-patch+json",
-          withCredentials: true,
-        },
-      },
-    );
-    if (response) {
-      setTodos((prevTodos) =>
-        prevTodos.map((todo) =>
-          todo.id === response.data.todo.id
-            ? { ...todo, ...updatedTodo }
-            : todo,
-        ),
-      );
-    } else {
-      console.error("Failed to edit todo");
-    }
+    axiosInstance
+      .patch(`/todos/${updatedTodo.id}`, payload)
+      .then((response) => {
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) =>
+            todo.id === response.data.todo.id
+              ? { ...todo, ...updatedTodo }
+              : todo,
+          ),
+        );
+      })
+      .catch((error) => {
+        console.error("PATCH request error:", error);
+      });
   };
 
   const deleteTodo = async (id: number) => {
-    const response = await axios.delete(
-      `https://todos.appsquare.io/todos/${id}`,
-      {
-        headers: {
-          Authorization: "Bearer charles-token",
-          accept: "text/plain",
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json-patch+json",
-          withCredentials: true,
-        },
-      },
-    );
-    if (response) {
-      setTodos((prevTodos) =>
-        prevTodos.filter((todo) => todo.id !== response.data.todo.id),
-      );
-    } else {
-      console.error("Failed to delete todo");
-    }
+    axiosInstance
+      .delete(`/todos/${id}`)
+      .then((response) => {
+        setTodos((prevTodos) =>
+          prevTodos.filter((todo) => todo.id !== response.data.todo.id),
+        );
+      })
+      .catch((error) => {
+        console.error("DELETE request error:", error);
+      });
   };
 
   return (
