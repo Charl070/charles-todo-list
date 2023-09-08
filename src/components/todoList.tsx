@@ -5,7 +5,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 function TodoList() {
   const { todos, addTodo, updateTodo, deleteTodo } = useTodoContext();
-  const { register, handleSubmit, control } = useForm<InsertTodo>();
+  const { register, handleSubmit, control, reset } = useForm<InsertTodo>();
 
   const onSubmit = async (data: InsertTodo) => {
     const payload = {
@@ -13,6 +13,8 @@ function TodoList() {
       title: data.title,
     };
     addTodo(payload);
+
+    reset();
   };
 
   return (
