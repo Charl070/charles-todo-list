@@ -55,10 +55,10 @@ function TodoList() {
               {todo.completed ? (
                 <FontAwesomeIcon
                   icon={faCheck}
-                  className="text-green-500 mr-2"
+                  className="text-green-500 mr-2 cursor-pointer"
                 />
               ) : (
-                <FontAwesomeIcon icon={faCheck} className="text-gray-300 mr-2" />
+                <FontAwesomeIcon icon={faCheck} className="text-gray-300 mr-2 cursor-pointer" />
               )}
               {todo.title}
             </span>
