@@ -58,7 +58,10 @@ function TodoList() {
                   className="text-green-500 mr-2 cursor-pointer"
                 />
               ) : (
-                <FontAwesomeIcon icon={faCheck} className="text-gray-300 mr-2 cursor-pointer" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="text-gray-300 mr-2 cursor-pointer"
+                />
               )}
               {todo.title}
             </span>

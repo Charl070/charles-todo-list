@@ -1,13 +1,12 @@
-import { TodoProvider } from './context/todo.context';
-import TodoList from './components/todoList';
+import { TodoProvider } from "./context/todo.context";
+import TodoList from "./components/todoList";
 
-const App =()=> {
- 
+const App = () => {
   return (
     <TodoProvider>
-      <TodoList/>
+      <TodoList />
     </TodoProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;
